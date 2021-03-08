@@ -1,0 +1,192 @@
+<html>
+
+<style>
+
+.label{
+
+    font-size: 20px;
+    font-family:'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+}
+   
+.button{
+
+   
+
+border-style: double;
+border-radius: 20px;
+padding: 10px;
+margin: 10px;
+background-color:green;
+height:50px;
+width:100px;
+
+
+
+}
+
+
+  
+.buttonred{
+
+   
+
+border-style: double;
+border-radius: 20px;
+padding: 10px;
+margin: 10px;
+background-color:tomato;
+height:50px;
+width:100px;
+
+
+
+}
+.heading{
+
+margin:20px;
+margin-top:40px;
+text-align: center;
+font-size: 40px;
+font-family:cursive;
+
+}
+.form{
+
+    margin:100px;
+    border:2px dotted black;
+    padding:40px;
+}
+.elements{
+
+    text-align: center;
+}
+
+</style>
+<script>
+
+
+let promise= new Promise(function(resolve,reject){
+var xhr = new XMLHttpRequest();
+xhr.open('GET', "http://34.71.224.0:8080/api/tasks",true);
+xhr.setRequestHeader('Authorization','Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ1c2VyMSIsImF1dGgiOiJST0xFX1VTRVIiLCJleHAiOjE2MTc0MzMzOTl9._VY8Ao2E4a4C5_3aWpRh3HzPBJPlQ4SWdzAlMObp89r3rEx2jQXs-x_Lz7ozNDZuIdxI9zuExRUFYCQaYwfRUw');
+xhr.withCredentials = true;
+console.log(xhr);
+xhr.onload = function () {
+var data = JSON.parse(xhr.responseText)
+if (xhr.status >= 200 && xhr.status < 400) {
+    const url_string = window.location.href;
+    var url = new URL(url_string);
+    var id = url.searchParams.get("id");
+    for(var i=0;i<data.length;i++){
+       
+
+   
+        if(data[i]['id']==id)
+        {
+
+           
+            resolve(data[i]);
+        }
+    }
+}
+else{
+
+            reject("Error occured")
+          }}
+xhr.send();
+});
+
+
+
+promise.then(function(result){
+   
+
+    document.getElementById("name").value=result['name'];
+    document.getElementById("status").value=result['status'];
+    document.getElementById("datetime").value=result['expiryDate'].substring(0,16);
+    
+},
+
+function(error){
+
+    //document.getElementById("error")="ERROR OCCURED WHILE DELETING THE TASK!"
+})
+
+
+
+function cancelapi(){
+
+console.log("hello")
+
+window.location.replace("index.html");
+}
+
+function updateapi(){
+    const url_string = window.location.href;
+    var url = new URL(url_string);
+    var id = url.searchParams.get("id");
+    var newdata = {};
+    newdata['id']=id;
+    newdata['name']=document.getElementById("name").value;
+    newdata['status']=document.getElementById('status').value;
+    newdata['expiryDate']=document.getElementById('datetime').value+":00Z";
+    console.log(newdata)
+    var xhr = new XMLHttpRequest();
+    xhr.open('PUT', "http://34.71.224.0:8080/api/tasks",true);
+    xhr.setRequestHeader('Content-type','application/json; charset=utf-8');
+    xhr.setRequestHeader('Authorization','Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ1c2VyMSIsImF1dGgiOiJST0xFX1VTRVIiLCJleHAiOjE2MTc0MzMzOTl9._VY8Ao2E4a4C5_3aWpRh3HzPBJPlQ4SWdzAlMObp89r3rEx2jQXs-x_Lz7ozNDZuIdxI9zuExRUFYCQaYwfRUw');
+    xhr.withCredentials = true; 
+    var jsondata = JSON.stringify(newdata);
+    console.log(xhr)
+    console.log(jsondata)
+    xhr.onload = function () {
+    if (xhr.status >= 200 && xhr.status < 400) {
+       
+
+        window.location.replace("index.html");
+    }
+    else{
+        console.log("error");
+    }
+    
+}
+xhr.send(jsondata);
+}
+
+    
+</script>
+
+<body>
+
+    <div class="heading">
+
+        To Do App- UPDATE YOUR TASK
+        </div>
+    <div class="form">
+
+        <form action="#" method="POST" >
+        <div class="elements">
+       <label><b>Name of the task:</b></label>
+       <input type="text" id="name" class="label" required>
+       <br>
+       <br>
+       <label><b>Status of the task:</b></label>
+       <input type="text" id="status" class="label" required>
+       <br>
+       <br>
+       
+       <label><b>Expiry  Date:</b></label>
+       <input type="datetime-local" id="datetime" class="label" required>
+<br><br>
+       <br>
+       <br>
+
+
+ 
+       <input type="button" value="Update" onclick="updateapi()" class="button" />
+       <input type="button" value="cancel" onclick="cancelapi()" class="buttonred" />
+
+     </div>
+
+</body>
+</html>

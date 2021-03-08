@@ -1,0 +1,169 @@
+<html>
+
+
+    <head>
+        <title>TO-DO-APP</title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+      </head>
+<style>
+
+
+
+.heading{
+
+margin:20px;
+margin-top:40px;
+text-align: center;
+font-size: 40px;
+font-family:cursive;
+
+}
+
+#noelements{
+
+    text-align: center;
+    position: relative;
+    top:30px;
+    font-size: 50px;
+    font-weight: bold;
+    font-family:'Courier New', Courier, monospace;
+
+}
+.button{
+
+border-style: double;
+border-radius: 20px;
+padding: 10px;
+margin: 10px;
+background-color: orange;
+height:50px;
+width:100px;
+
+}
+
+
+.newdata{
+
+    text-align: center;
+   
+    font-size: 70px;
+}
+</style>
+<script>
+
+
+function tableInsert(row){
+   console.log(row);    
+    var table=document.getElementById("mytable");
+    var onerow=table.insertRow(0);
+    let name=onerow.insertCell(0);
+    let expdate=onerow.insertCell(1);
+    let status=onerow.insertCell(2);
+    let update=onerow.insertCell(3);
+    let del=onerow.insertCell(4);
+    name.innerHTML=row['name'];
+    console.log(name);
+    expdate.innerHTML=row['expiryDate'].substring(0,10);
+    status.innerHTML=row['status'];
+    let anchortag_for_delete=document.createElement('a');
+    let text_for_delete=document.createTextNode("Delete");
+    anchortag_for_delete.appendChild(text_for_delete);
+   anchortag_for_delete.className="btn btn-danger";
+    anchortag_for_delete.href="delete.html"+"?id="+row['id'];
+    del.appendChild(anchortag_for_delete);
+    let anchortag_for_update=document.createElement("a");
+    let text_for_update=document.createTextNode("EDIT");
+    anchortag_for_update.appendChild(text_for_update);
+    anchortag_for_update.className="btn btn-success";
+    anchortag_for_update.href="update.html"+"?id="+row['id'];
+    update.appendChild(anchortag_for_update);
+
+}
+
+let promise =new Promise(function(resolve,reject){
+
+    var xhr = new XMLHttpRequest();
+    xhr.open('GET', "http://34.71.224.0:8080/api/tasks",true);
+    xhr.setRequestHeader('Authorization','Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ1c2VyMSIsImF1dGgiOiJST0xFX1VTRVIiLCJleHAiOjE2MTc0MzMzOTl9._VY8Ao2E4a4C5_3aWpRh3HzPBJPlQ4SWdzAlMObp89r3rEx2jQXs-x_Lz7ozNDZuIdxI9zuExRUFYCQaYwfRUw');
+    xhr.withCredentials = true;
+    console.log(xhr);
+    xhr.onload = function () {
+    var data = JSON.parse(xhr.responseText)
+    if (xhr.status >= 200 && xhr.status < 400) {
+          
+        resolve(data)}
+          else{
+
+            reject("Error occured")
+          }}
+    xhr.send();
+})
+
+promise.then(
+
+function(data){
+
+if(data.length===0){
+    document.getElementById("noelements").innerText="No Tasks currently"
+}
+
+else{
+data.forEach(tableInsert)
+
+}
+
+},
+function(error){
+
+    document.getElementById("noelements").innerText="ERROR OCCURED"
+}
+
+);
+
+
+
+
+
+</script>
+<body>
+
+<div class="heading">
+
+To Do App
+</div>
+<br><br>
+<div class="newdata">
+    <a href="newtask.html" class="btn btn-warning"><b>Add a NewTask</b></a>
+
+</div>
+
+<br><br><br>
+<div class="table1">
+<table class="table  table-hover">
+    <thead id="append">
+      <tr>
+        <th>TaskName</th>
+        <th>Expiry Date</th>
+        <th>Status</th>
+        <th>UPDATE</th>
+        <th>Delete The Record</th>
+      </tr>
+    </thead>
+
+    <tbody id="mytable">
+     
+    </tbody>
+  </table>
+</div>
+<div id="noelements">
+
+
+</div>
+</body>
+
+
+</html>

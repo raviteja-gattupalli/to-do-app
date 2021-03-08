@@ -1,0 +1,51 @@
+<html>
+
+<script>
+const url_string = window.location.href;
+var url = new URL(url_string);
+var id = url.searchParams.get("id");
+
+let promise =new Promise(function(resolve,reject){
+
+var xhr = new XMLHttpRequest();
+delete_url="http://34.71.224.0:8080/api/tasks/"+id;
+console.log(delete_url)
+xhr.open('DELETE',delete_url ,true);
+xhr.setRequestHeader('Authorization','Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ1c2VyMSIsImF1dGgiOiJST0xFX1VTRVIiLCJleHAiOjE2MTc0MzMzOTl9._VY8Ao2E4a4C5_3aWpRh3HzPBJPlQ4SWdzAlMObp89r3rEx2jQXs-x_Lz7ozNDZuIdxI9zuExRUFYCQaYwfRUw');
+xhr.withCredentials = true;
+console.log(xhr);
+xhr.onload = function () {
+if (xhr.status >= 200 && xhr.status < 400) {
+   
+    resolve("sucess")}
+    else{
+        reject("error")
+    }
+
+}
+
+xhr.send();
+});
+
+promise.then(function(result){
+    window.location.replace("index.html");
+
+},
+
+function(error){
+
+    document.getElementById("error")="ERROR OCCURED WHILE DELETING THE TASK!"
+})
+
+</script>
+
+
+<body>
+
+
+    <div id="error">
+
+
+    </div>
+</body>
+</html>
